@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: backend-service
+  profiles:
+    active: @spring.profiles.active@
+  spring:
+    servlet:
+      multipart:
+        max-file-size: 50MB       # default = 1MB
+        max-request-size: 50MB    # default = 10MB (form data)
+api:
+  prefix: /api/v1
+foodapp:
+  upload-file:
+    base-path: file:///D:/BackendFoodApp/uploads/
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#
+#logging:
+#  level:
+#    root: INFO
+#    web: INFO
