@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class Order {
     @Column(name = "note", length = 100)
     private String note;
 
+    @CreatedBy
     @Column(name="order_date")
     private LocalDateTime orderDate;
 

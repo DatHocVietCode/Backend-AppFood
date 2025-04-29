@@ -1,18 +1,26 @@
 package vn.dk.BackendFoodApp.repository;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import vn.dk.BackendFoodApp.model.Product;
+import vn.dk.BackendFoodApp.dto.response.product.ProductResponse;
 
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query(value = "SELECT p.*, SUM(od.number_of_products) AS total_sold " +
-            "FROM order_details od " +
-            "JOIN product p ON od.product_id = p.id " +
-            "GROUP BY p.id " +
-            "ORDER BY total_sold DESC " +
-            "LIMIT 10", nativeQuery = true)
-    List<Product> findTop10BestSellingProducts();
+
+    List<Product> findTop10ByOrderBySoldDesc();
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:categoryId IS NULL OR :categoryId = 0 OR p.category.id = :categoryId) " +
+            "AND (:keyword IS NULL OR :keyword = '' OR p.name LIKE %:keyword% OR p.description LIKE %:keyword%)")
+    Page<Product> searchProducts
+            (@Param("categoryId") Long categoryId,
+             @Param("keyword") String keyword, Pageable pageable);
+
+    List<Product> findTop10ByOrderByCreatedAtDesc();
 }

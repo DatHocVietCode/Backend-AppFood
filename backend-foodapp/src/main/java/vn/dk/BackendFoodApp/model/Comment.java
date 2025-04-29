@@ -28,5 +28,9 @@ public class Comment extends BaseEntity {
     @JsonBackReference
     private User user;
 
+    @Column(name = "star")
+    private Integer star;
+
+    @Column(name = "content")
     private String content;
 }

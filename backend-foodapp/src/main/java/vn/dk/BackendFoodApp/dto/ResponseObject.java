@@ -1,4 +1,4 @@
-package vn.dk.BackendFoodApp.payload;
+package vn.dk.BackendFoodApp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.dk.BackendFoodApp.model.Category;
-import vn.dk.BackendFoodApp.payload.ResponseObject;
+import vn.dk.BackendFoodApp.dto.ResponseObject;
 import vn.dk.BackendFoodApp.service.CategoryService;
 
 import java.util.List;

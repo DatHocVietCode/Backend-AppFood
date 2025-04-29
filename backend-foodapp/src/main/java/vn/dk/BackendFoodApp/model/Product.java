@@ -48,6 +48,9 @@ public class Product extends BaseEntity{
     @Column(name = "average_rating")
     private Float averageRating;
 
+    @Column(name = "sold")
+    private Long sold;
+
     @OneToMany(mappedBy = "product",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)

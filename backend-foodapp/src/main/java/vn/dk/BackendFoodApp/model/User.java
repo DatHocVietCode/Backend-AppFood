@@ -20,6 +20,9 @@ public class User extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", length = 255)
+    private String username;
+
     @Column(name = "fullname", length = 100)
     private String fullName;
 
