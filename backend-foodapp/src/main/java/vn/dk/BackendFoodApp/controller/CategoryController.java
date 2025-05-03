@@ -9,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.dk.BackendFoodApp.model.Category;
 import vn.dk.BackendFoodApp.dto.ResponseObject;
 import vn.dk.BackendFoodApp.service.CategoryService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
@@ -28,14 +30,22 @@ public class CategoryController {
     CategoryService categoryService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllCategories(){
+    public ResponseEntity<ResponseObject> getAllCategories(@RequestParam(value = "category_id", required = false) Long id) {
+        List<Category> categories;
 
-        List<Category> categories = categoryService.getAllCategories();
+        if (id != null) {
+            Optional<Category> category = categoryService.getCategoryById(id); // Bạn cần có hàm này trong service
+            categories = category.map(List::of).orElse(List.of());
+        } else {
+            categories = categoryService.getAllCategories();
+        }
+
         return ResponseEntity.ok(ResponseObject.builder()
                 .message("Get list of categories successfully")
                 .status(HttpStatus.OK.value())
                 .data(categories)
                 .build());
     }
+
 
 }
