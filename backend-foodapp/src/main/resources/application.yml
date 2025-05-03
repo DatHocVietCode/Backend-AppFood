@@ -20,7 +20,7 @@ api:
   prefix: /api/v1
 foodapp:
   upload-file:
-    base-path: file:///D:/BackendFoodApp/uploads/
+    base-path: file:///D:/University/Nam3/2stSemester/Mobile/FinalProject/Project/LocalServer/Backend-AppFood/uploads/
 
 #management:
 #  endpoints:
