@@ -8,4 +8,8 @@ import vn.dk.BackendFoodApp.model.User;
 public interface UserRepository extends JpaRepository<User,Long> {
 
     User findByEmail(String email);
+
+    User findByUsername(String username);
+
+    User findByRefreshTokenAndUsername(String token, String username);
 }

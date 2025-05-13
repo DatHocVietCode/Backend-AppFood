@@ -1,5 +1,6 @@
 package vn.dk.BackendFoodApp.dto.response.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import vn.dk.BackendFoodApp.model.Role;
@@ -32,11 +33,12 @@ public class UserResponse {
     private boolean active;
 
     @JsonProperty("date_of_birth")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date dateOfBirth;   
 
-
-    @JsonProperty("role")
-    private Role role;
+    private String email;
+//    @JsonProperty("role")
+//    private Role role;
 
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
@@ -47,7 +49,8 @@ public class UserResponse {
                 .profileImage(user.getProfileImage())
                 .active(user.isActive())
                 .dateOfBirth(user.getDateOfBirth())
-                .role(user.getRole())
+                .email(user.getEmail())
+//                .role(user.getRole())
                 .build();
     }
 }

@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class BaseResponse {
     @JsonProperty("created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime createdAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 }

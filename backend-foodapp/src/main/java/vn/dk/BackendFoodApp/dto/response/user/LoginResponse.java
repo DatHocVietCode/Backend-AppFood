@@ -2,6 +2,7 @@ package vn.dk.BackendFoodApp.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import vn.dk.BackendFoodApp.model.Role;
 
 import java.util.List;
 
@@ -11,18 +12,24 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class LoginResponse {
-    @JsonProperty("message")
-    private String message;
 
-    @JsonProperty("token")
-    private String token;
+    @JsonProperty("access_token")
+    private String accessToken;
 
-    @JsonProperty("refresh_token")
-    private String refreshToken;
-    private String tokenType = "Bearer";
+//    @JsonProperty("refresh_token")
+//    private String refreshToken;
+
+    private UserLogin user;
+
     //user's detail
-    private Long id;
-    private String username;
-
-    private List<String> roles;
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserLogin{
+        private Long id;
+        private String username;
+        private String role;
+        private String fullname;
+    }
 }

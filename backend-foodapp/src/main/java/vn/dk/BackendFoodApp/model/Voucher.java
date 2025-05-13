@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "coupons")
+@Table(name = "vouchers")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Coupon {
+public class Voucher {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,4 +21,14 @@ public class Coupon {
 
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "min_amount")
+    private Integer minAmount;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
 }

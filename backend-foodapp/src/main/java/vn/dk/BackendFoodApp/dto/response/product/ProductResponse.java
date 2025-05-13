@@ -3,6 +3,7 @@ package vn.dk.BackendFoodApp.dto.response.product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import vn.dk.BackendFoodApp.model.Category;
 import vn.dk.BackendFoodApp.model.Comment;
 import vn.dk.BackendFoodApp.model.Product;
 import vn.dk.BackendFoodApp.model.ProductImage;
@@ -27,6 +28,10 @@ public class ProductResponse extends BaseResponse {
     private String thumbnail;
     private String description;
     private Long sold;
+    @JsonProperty("average_rating")
+    private Float averageRating;
+    @JsonProperty("count_comment")
+    private Integer countComment;
 
     @JsonProperty("product_images")
     private List<ProductImage> productImages = new ArrayList<>();
@@ -37,8 +42,12 @@ public class ProductResponse extends BaseResponse {
     @JsonProperty("favorites")
     private List<FavoriteResponse> favorites = new ArrayList<>();
 
-    @JsonProperty("category_id")
+    @JsonProperty
     private Long categoryId;
+
+    @JsonProperty("category_name")
+    private String categoryName;
+
 
     public static ProductResponse fromProduct(Product product) {
         List<Comment> sortedComments = product.getComments()
@@ -52,11 +61,14 @@ public class ProductResponse extends BaseResponse {
                 .price(product.getPrice())
                 .thumbnail(product.getThumbnail())
                 .description(product.getDescription())
-                .categoryId(product.getCategory().getId())
+                .categoryName(product.getCategory().getName())
                 .productImages(product.getProductImages())
                 .comments(sortedComments.stream().map(CommentResponse::fromComment).toList())
                 .favorites(product.getFavorites().stream().map(FavoriteResponse::fromFavorite).toList())
+                .categoryId(product.getCategory().getId())
                 .sold(product.getSold())
+                .countComment(product.getComments().size())
+                .averageRating(product.getAverageRating())
                 .createdAt(product.getCreatedAt()) // kế thừa từ BaseResponse
                 .updatedAt(product.getUpdatedAt()) // kế thừa từ BaseResponse
                 .build();

@@ -9,11 +9,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.dk.BackendFoodApp.dto.ResponseObject;
 import vn.dk.BackendFoodApp.dto.response.product.ProductPageResponse;
 import vn.dk.BackendFoodApp.dto.response.product.ProductResponse;
@@ -35,6 +34,7 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping("")
+//    @Secured("ROLE_USER")
     public ResponseEntity<ResponseObject> getProducts(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(required = false, name = "category_id") Long categoryId,
@@ -113,8 +113,6 @@ public class ProductController {
     ){
         List<ProductResponse> products = productService.getNewProducts(keyword, categoryId, sort_by_name, sort_by_price);
 
-
-
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.OK.value())
                 .message("Get list of new products successfully")
@@ -122,4 +120,39 @@ public class ProductController {
                 .build());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getProductById(
+            @PathVariable("id") Long productId
+    ) throws Exception {
+        ProductResponse product = productService.getProductById(productId);
+        return ResponseEntity.ok(ResponseObject.builder()
+                .data(product)
+                .message("Get detail product successfully")
+                .status(HttpStatus.OK.value())
+                .build());
+
+    }
+
+//    @PostMapping("/like/{productId}")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//    public ResponseEntity<ResponseObject> likeProduct(@PathVariable Long productId) throws Exception {
+//        User loginUser = securityUtils.getLoggedInUser();
+//        Product likedProduct = productService.likeProduct(loginUser.getId(), productId);
+//        return ResponseEntity.ok(ResponseObject.builder()
+//                .data(ProductResponse.fromProduct(likedProduct))
+//                .message("Like product successfully")
+//                .status(HttpStatus.OK)
+//                .build());
+//    }
+//    @PostMapping("/unlike/{productId}")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//    public ResponseEntity<ResponseObject> unlikeProduct(@PathVariable Long productId) throws Exception {
+//        User loginUser = securityUtils.getLoggedInUser();
+//        Product unlikedProduct = productService.unlikeProduct(loginUser.getId(), productId);
+//        return ResponseEntity.ok(ResponseObject.builder()
+//                .data(ProductResponse.fromProduct(unlikedProduct))
+//                .message("Unlike product successfully")
+//                .status(HttpStatus.OK)
+//                .build());
+//    }
 }

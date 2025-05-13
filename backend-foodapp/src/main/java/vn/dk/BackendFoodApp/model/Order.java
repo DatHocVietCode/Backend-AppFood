@@ -77,7 +77,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "coupon_id", nullable = true)
     @JsonBackReference
-    private Coupon coupon = null;
+    private Voucher voucher = null;
 
 
 }

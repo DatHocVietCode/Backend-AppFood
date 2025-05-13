@@ -20,14 +20,20 @@ public class CommentResponse extends BaseResponse {
     @JsonProperty("content")
     private String content;
 
-    @JsonProperty("user")
-    private UserResponse user;
+//    @JsonProperty("user")
+//    private UserResponse user;
 
     @JsonProperty("product_id")
     private Long productId;
 
-    @JsonProperty("star")
+    @JsonProperty("rating")
     private Integer star;
+
+    @JsonProperty("avatar_user")
+    private String avatarUser;
+
+    @JsonProperty("name")
+    private String username;
 
 
     public static CommentResponse fromComment(Comment comment) {
@@ -35,7 +41,9 @@ public class CommentResponse extends BaseResponse {
         CommentResponse result = CommentResponse.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
-                .user(userResponse)
+//                .user(userResponse)
+                .avatarUser(comment.getUser().getProfileImage())
+                .username(comment.getUser().getUsername())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
                 .productId(comment.getProduct().getId())

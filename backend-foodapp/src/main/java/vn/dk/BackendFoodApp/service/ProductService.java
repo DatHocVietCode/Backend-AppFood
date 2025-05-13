@@ -11,6 +11,7 @@ import vn.dk.BackendFoodApp.repository.ProductRepository;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,5 +105,14 @@ public class ProductService {
         }
 
         return products;
+    }
+
+    public ProductResponse getProductById(long productId){
+        ProductResponse product = productRepository.findById(productId)
+                .stream()
+                .map(ProductResponse::fromProduct)
+                .findFirst()
+                .orElse(null);
+        return product;
     }
 }

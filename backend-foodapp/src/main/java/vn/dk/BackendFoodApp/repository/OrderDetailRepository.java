@@ -5,6 +5,4 @@ import vn.dk.BackendFoodApp.model.OrderDetail;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail,Long> {
 
-
-
 }

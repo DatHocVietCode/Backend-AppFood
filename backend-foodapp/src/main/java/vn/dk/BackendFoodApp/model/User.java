@@ -53,12 +53,12 @@ public class User extends BaseEntity{
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
+    @Column(name = "refresh_token", columnDefinition = "MEDIUMTEXT")
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 255)
     private UserStatus status;
-
-
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -67,4 +67,7 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Voucher> vouchers = new ArrayList<>();
 }

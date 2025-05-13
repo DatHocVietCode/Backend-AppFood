@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -30,14 +31,14 @@ import javax.crypto.spec.SecretKeySpec;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
-@EnableMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfiguration {
 
     @Value("${security.authentication.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${security.authentication.jwt.token-validity-in-seconds}")
-    private String jwtExpiration;
+    @Value("${security.authentication.jwt.access-token-validity-in-seconds}")
+    private String accessTokenExpiration;
     // khoi tao spring web security
 
     //config spring web configuer
@@ -49,12 +50,14 @@ public class SecurityConfiguration {
         http
                 .csrf(c -> c.disable()) // Disable CSRF vì mình làm API (không cần bảo vệ CSRF)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/","/login","/products/**","/swagger-ui/**", "/categories/**").permitAll() // Những API public cho phép truy cập
+                        .requestMatchers("/","/auth/login","/auth/refresh ","/swagger-ui/**", "/categories/**","/uploads/**","/products/**").permitAll() // Những API public cho phép truy cập
+                        .requestMatchers("/users/my-profile").authenticated()
                         .anyRequest().authenticated() // Các API còn lại bắt buộc phải đăng nhập
 
                 )
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(customAuthenticationEntryPoint))
 
                 .exceptionHandling(
                         exceptions -> exceptions
@@ -90,7 +93,7 @@ public class SecurityConfiguration {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("AUTHORITIES_KEY");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
