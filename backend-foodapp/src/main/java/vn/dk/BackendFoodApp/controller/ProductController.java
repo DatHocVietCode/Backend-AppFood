@@ -124,7 +124,8 @@ public class ProductController {
     public ResponseEntity<ResponseObject> getProductById(
             @PathVariable("id") Long productId
     ) throws Exception {
-        ProductResponse product = productService.getProductById(productId);
+        Product product = productService.getProductById(productId);
+        ProductResponse products = ProductResponse.fromProduct(product);
         return ResponseEntity.ok(ResponseObject.builder()
                 .data(product)
                 .message("Get detail product successfully")

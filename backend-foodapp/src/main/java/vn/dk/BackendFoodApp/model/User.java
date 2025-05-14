@@ -14,7 +14,6 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,4 +69,7 @@ public class User extends BaseEntity{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Voucher> vouchers = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
 }

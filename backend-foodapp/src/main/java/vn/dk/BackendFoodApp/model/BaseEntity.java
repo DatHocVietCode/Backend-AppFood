@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-
 public class BaseEntity{
 
     @CreatedBy

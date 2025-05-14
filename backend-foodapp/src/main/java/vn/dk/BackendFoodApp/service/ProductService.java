@@ -107,12 +107,11 @@ public class ProductService {
         return products;
     }
 
-    public ProductResponse getProductById(long productId){
-        ProductResponse product = productRepository.findById(productId)
-                .stream()
-                .map(ProductResponse::fromProduct)
-                .findFirst()
-                .orElse(null);
-        return product;
+    public Product getProductById(Long productId){
+        Optional<Product> product = productRepository.findById(productId);
+        if(product.isEmpty()){
+            return null;
+        }
+        return product.get();
     }
 }
