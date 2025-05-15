@@ -69,7 +69,6 @@ public class Order {
     @Column(name = "active")
     private Boolean active;//thuộc về admin
 
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<OrderDetail> orderDetails;

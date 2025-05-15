@@ -28,6 +28,9 @@ public class Voucher {
     @Column(name = "min_amount")
     private Integer minAmount;
 
+    @Column(name = "discount")
+    private Integer discount;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
     private User user;

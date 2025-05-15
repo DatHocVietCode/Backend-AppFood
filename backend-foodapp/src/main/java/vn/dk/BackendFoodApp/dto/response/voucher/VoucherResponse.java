@@ -28,8 +28,9 @@ public class VoucherResponse {
     @JsonProperty("min_amount")
     private Integer minAmount;
 
-    @JsonProperty("user_id")
-    private Long userId;
+    @JsonProperty("discount")
+    private Integer discount;
+
 
     public static VoucherResponse fromVoucher(Voucher voucher) {
         return VoucherResponse.builder()
@@ -37,7 +38,7 @@ public class VoucherResponse {
                 .code(voucher.getCode())
                 .minAmount(voucher.getMinAmount())
                 .name(voucher.getName())
-                .userId(Optional.ofNullable(voucher.getUser()).map(User::getId).orElse(null))
+                .discount(voucher.getDiscount())
                 .build();
     }
 }

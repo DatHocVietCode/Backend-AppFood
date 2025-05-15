@@ -42,7 +42,7 @@ public class ProductResponse extends BaseResponse {
     @JsonProperty("favorites")
     private List<FavoriteResponse> favorites = new ArrayList<>();
 
-    @JsonProperty
+    @JsonProperty("category_id")
     private Long categoryId;
 
     @JsonProperty("category_name")
