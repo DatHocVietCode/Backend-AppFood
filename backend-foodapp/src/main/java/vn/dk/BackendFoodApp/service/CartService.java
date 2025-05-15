@@ -80,6 +80,34 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    public void addProductToCart(String username, Long productId, int quantity) {
+        User user = userService.handleGetUserByUserName(username);
+
+        Cart cart = getCartByUser(user);
+
+        Optional<CartItem> existingItemOpt = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst();
+
+        if (existingItemOpt.isPresent()) {
+            CartItem existingItem = existingItemOpt.get();
+            // Cộng thêm số lượng
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+        } else {
+            Product product = productService.getProductById(productId);
+            if (product == null) {
+                throw new EntityNotFoundException("Product not found");
+            }
+            CartItem newItem = CartItem.builder()
+                    .cart(cart)
+                    .product(product)
+                    .quantity(quantity)
+                    .build();
+            cart.getCartItems().add(newItem);
+        }
+
+        cartRepository.save(cart);
+    }
     public void save(Cart cart) {
         cartRepository.save(cart);
     }
