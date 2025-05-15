@@ -26,20 +26,17 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "fullname", length = 100)
-    private String fullName;
-
-    @Column(name = "email", length = 100)
-    private String email;
-
-    @Column(name = "phone_number",nullable = false, length = 100)
-    private String phoneNumber;
-
-    @Column(name = "address", length = 100)
-    private String address;
-
-    @Column(name = "note", length = 100)
-    private String note;
+//    @Column(name = "fullname", length = 100)
+//    private String fullName;
+//
+//    @Column(name = "email", length = 100)
+//    private String email;
+//
+//    @Column(name = "phone_number",nullable = false, length = 100)
+//    private String phoneNumber;
+//
+//    @Column(name = "note", length = 100)
+//    private String note;
 
     @CreatedBy
     @Column(name="order_date")
@@ -51,17 +48,12 @@ public class Order {
     @Column(name = "total_money")
     private Float totalMoney;
 
-    @Column(name = "shipping_method")
-    private String shippingMethod = "";
-
-    @Column(name = "shipping_address")
-    private String shippingAddress = "";
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_method_id")
+    private ShippingMethod shippingMethod;
 
     @Column(name = "shipping_date")
     private LocalDate shippingDate;
-
-    @Column(name = "tracking_number")
-    private String trackingNumber;
 
     @Column(name = "payment_method")
     private String paymentMethod = "";
@@ -78,6 +70,8 @@ public class Order {
     @JsonBackReference
     private Voucher voucher = null;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 }
 
