@@ -29,7 +29,7 @@ public class CommentController {
     private final ProductRepository productRepository;
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<ResponseObject> postComment(@RequestBody CommentRequestDTO commentRequest) {
         Optional<String> usernameOpt = TokenService.getCurrentUserLogin();
 
