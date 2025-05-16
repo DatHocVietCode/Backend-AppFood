@@ -45,7 +45,7 @@ public class OrderController {
         }
 
         User user = userService.handleGetUserByUserName(usernameOpt.get());
-        List<Order> pendingOrders = orderRepository.findByUserIdAndStatusOrderByOrderDateDesc(user.getId(), "PENDING");
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatusInOrderByOrderDateDesc(user.getId(), List.of("0", "1","2","3"));
 
         List<MyOrderPendingDTO> result = new ArrayList<>();
 
