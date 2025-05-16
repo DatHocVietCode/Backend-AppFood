@@ -67,7 +67,7 @@ public class CommentController {
                 .body(ResponseObject.builder()
                         .status(HttpStatus.CREATED.value())
                         .message("Comment posted successfully")
-                        .data(comment)
+                        .data(null)
                         .build());
     }
 }
