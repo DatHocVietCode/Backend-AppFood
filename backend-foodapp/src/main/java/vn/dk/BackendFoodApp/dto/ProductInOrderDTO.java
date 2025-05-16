@@ -15,4 +15,5 @@ public class ProductInOrderDTO {
     private String category;
     private int quantity;
     private String thumbnail;
+    private Float price;
 }

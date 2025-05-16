@@ -56,6 +56,7 @@ public class OrderController {
                 Product product = detail.getProduct();
 
                 ProductInOrderDTO productDTO = ProductInOrderDTO.builder()
+                        .price(product.getPrice())
                         .foodName(product.getName())
                         .category(product.getCategory() != null ? product.getCategory().getName() : null)
                         .quantity(detail.getNumberOfProducts())
@@ -68,6 +69,7 @@ public class OrderController {
             MyOrderPendingDTO dto = MyOrderPendingDTO.builder()
                     .idOrder(order.getId())
                     .status(order.getStatus())
+                    .paymentMethod(order.getPaymentMethod())
                     .totalPrice(order.getTotalMoney())
                     .created(order.getOrderDate())
                     .products(products)
@@ -116,6 +118,7 @@ public class OrderController {
                 ProductInOrderDTO productDTO = ProductInOrderDTO.builder()
                         .idProduct(product.getId())
                         .foodName(product.getName())
+                        .price(product.getPrice())
                         .category(product.getCategory() != null ? product.getCategory().getName() : null)
                         .quantity(detail.getNumberOfProducts())
                         .thumbnail(product.getThumbnail())

@@ -60,7 +60,7 @@ public class PaymentController {
         order.setVoucher(orderService.findVoucherById(request.getIdVoucher()));
         order.setAddress(orderService.findAddressById(request.getIdAddress()));
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("Pending");
+        order.setStatus("0");
         order.setActive(true);
 
         // Lấy cart hiện tại của user

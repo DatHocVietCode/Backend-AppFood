@@ -19,4 +19,5 @@ public class MyOrderPendingDTO {
     private List<ProductInOrderDTO> products;
     private String status;
     private LocalDateTime created;
+    private String paymentMethod;
 }
