@@ -49,4 +49,12 @@ public class OrderService {
         if (id == null) return null;
         return addressRepository.findById(id).orElse(null);
     }
+
+    // Lấy đơn hàng theo ID (bao gồm chi tiết đơn hàng)
+    public Order findById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order with ID " + id + " not found"));
+    }
+
+
 }
