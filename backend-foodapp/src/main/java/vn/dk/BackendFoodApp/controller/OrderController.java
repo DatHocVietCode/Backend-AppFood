@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.dk.BackendFoodApp.dto.MyOrderPendingDTO;
 import vn.dk.BackendFoodApp.dto.ProductInOrderDTO;
 import vn.dk.BackendFoodApp.dto.ResponseObject;
@@ -147,4 +144,67 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/cancel/{orderId}")
+    public ResponseEntity<ResponseObject> cancelMyOrder(@PathVariable Long orderId) {
+        Optional<String> usernameOpt = TokenService.getCurrentUserLogin();
+
+        if (usernameOpt.isEmpty()) {
+            return ResponseEntity.status(401).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.UNAUTHORIZED.value())
+                            .data(null)
+                            .message("UnAuthorized")
+                            .build()
+            );
+        }
+
+        User user = userService.handleGetUserByUserName(usernameOpt.get());
+
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
+
+        if (orderOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.NOT_FOUND.value())
+                            .data(null)
+                            .message("Order not found")
+                            .build()
+            );
+        }
+
+        Order order = orderOpt.get();
+
+        // ✅ Kiểm tra quyền sở hữu
+        if (!order.getUser().getId().equals(user.getId())) {
+            return ResponseEntity.status(403).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.FORBIDDEN.value())
+                            .data(null)
+                            .message("You are not authorized to cancel this order")
+                            .build()
+            );
+        }
+
+        // ✅ Chỉ cho phép hủy nếu chưa giao hàng xong
+        if (order.getStatus().equalsIgnoreCase("COMPLETED") || order.getStatus().equalsIgnoreCase("CANCEL")) {
+            return ResponseEntity.status(400).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .data(null)
+                            .message("Order cannot be cancelled")
+                            .build()
+            );
+        }
+
+        order.setStatus("CANCEL");
+        orderRepository.save(order);
+
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Order cancelled successfully")
+                        .data(null)
+                        .build()
+        );
+    }
 }
