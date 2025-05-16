@@ -69,6 +69,8 @@ public class OrderController {
             MyOrderPendingDTO dto = MyOrderPendingDTO.builder()
                     .idOrder(order.getId())
                     .status(order.getStatus())
+                    .voucher(order.getVoucher().getDiscount())
+                    .deliveryFee(order.getShippingMethod().getPrice())
                     .paymentMethod(order.getPaymentMethod())
                     .totalPrice(order.getTotalMoney())
                     .created(order.getOrderDate())
@@ -103,7 +105,6 @@ public class OrderController {
 
         User user = userService.handleGetUserByUserName(usernameOpt.get());
 
-        // ✅ Lấy cả COMPLETED và CANCEL
         List<Order> completedOrCancelledOrders = orderRepository
                 .findByUserIdAndStatusInOrderByOrderDateDesc(user.getId(), List.of("COMPLETED", "CANCEL"));
 
@@ -131,6 +132,9 @@ public class OrderController {
                     .idOrder(order.getId())
                     .totalPrice(order.getTotalMoney())
                     .products(products)
+                    .paymentMethod(order.getPaymentMethod())
+                    .voucher(order.getVoucher().getDiscount())
+                    .deliveryFee(order.getShippingMethod().getPrice())
                     .created(order.getOrderDate())
                     .status(order.getStatus())
                     .build();

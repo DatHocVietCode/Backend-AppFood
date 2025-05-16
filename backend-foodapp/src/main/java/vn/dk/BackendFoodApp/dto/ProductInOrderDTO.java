@@ -16,4 +16,5 @@ public class ProductInOrderDTO {
     private int quantity;
     private String thumbnail;
     private Float price;
+
 }

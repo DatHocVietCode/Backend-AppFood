@@ -20,4 +20,6 @@ public class MyOrderPendingDTO {
     private String status;
     private LocalDateTime created;
     private String paymentMethod;
+    private Float deliveryFee;
+    private Integer voucher;
 }
