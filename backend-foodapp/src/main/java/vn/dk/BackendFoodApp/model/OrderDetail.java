@@ -34,8 +34,4 @@ public class OrderDetail {
     @Column(name = "total_money", nullable = false)
     private Float totalMoney;
 
-    @ManyToOne
-    @JoinColumn(name = "voucher_id", nullable = true)
-    @JsonBackReference
-    private Voucher voucher;
 }

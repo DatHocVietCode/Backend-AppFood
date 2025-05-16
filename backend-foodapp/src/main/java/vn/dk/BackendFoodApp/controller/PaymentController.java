@@ -82,7 +82,7 @@ public class PaymentController {
             detail.setPrice(price);
             detail.setNumberOfProducts(quantity);
             detail.setTotalMoney(total);
-            detail.setVoucher(order.getVoucher());
+//            detail.setVoucher(order.getVoucher());
 
             orderDetails.add(detail);
             totalMoney += total;

@@ -66,7 +66,7 @@ public class Order {
     private List<OrderDetail> orderDetails;
 
     @ManyToOne
-    @JoinColumn(name = "coupon_id", nullable = true)
+    @JoinColumn(name = "voucher_id", nullable = true)
     @JsonBackReference
     private Voucher voucher = null;
 
