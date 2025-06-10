@@ -38,4 +38,10 @@ public class UserService {
         User user = handleGetUserByUserName(usernameOpt.get());
         return user;
     }
+
+    public boolean isUserEmailExisted(String email)
+    {
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
+        return user.isPresent();
+    }
 }

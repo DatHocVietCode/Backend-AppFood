@@ -50,7 +50,8 @@ public class SecurityConfiguration {
         http
                 .csrf(c -> c.disable()) // Disable CSRF vì mình làm API (không cần bảo vệ CSRF)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/","/auth/login","/auth/refresh ","/swagger-ui/**", "/categories/**","/uploads/**","/products/**").permitAll() // Những API public cho phép truy cập
+                        .requestMatchers("/","/auth/login","/auth/signUp","/auth/refresh ","/swagger-ui/**",
+                                "/categories/**","/uploads/**","/products/**").permitAll() // Những API public cho phép truy cập
                         .requestMatchers("/users/my-profile").authenticated()
                         .anyRequest().authenticated() // Các API còn lại bắt buộc phải đăng nhập
 
