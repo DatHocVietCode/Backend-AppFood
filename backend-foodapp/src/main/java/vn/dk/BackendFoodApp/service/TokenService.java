@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
-import vn.dk.BackendFoodApp.dto.request.user.UserLoginDTO;
 import vn.dk.BackendFoodApp.dto.response.user.LoginResponse;
 
 import javax.crypto.SecretKey;
