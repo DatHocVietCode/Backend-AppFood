@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.dk.BackendFoodApp.dto.ResponseObject;
+import vn.dk.BackendFoodApp.dto.request.auth.OTPReceivedDTO;
 import vn.dk.BackendFoodApp.dto.request.auth.UserLoginDTO;
 import vn.dk.BackendFoodApp.dto.request.auth.UserSignUpDTO;
 import vn.dk.BackendFoodApp.dto.response.user.LoginResponse;
@@ -23,6 +24,7 @@ import vn.dk.BackendFoodApp.model.User;
 import vn.dk.BackendFoodApp.service.OTPService;
 import vn.dk.BackendFoodApp.service.TokenService;
 import vn.dk.BackendFoodApp.service.UserService;
+import vn.dk.BackendFoodApp.utils.EmailValidatorUtils;
 
 import java.io.UnsupportedEncodingException;
 
@@ -30,7 +32,7 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/auth")
 public class AuthController {
 
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Value("${security.authentication.jwt.refresh-token-validity-in-seconds}")
     private Long refreshTokenExpiration;
@@ -49,42 +51,86 @@ public class AuthController {
 
     @PostMapping("/signUp")
     public ResponseEntity<ResponseObject> signUp(@Valid @RequestBody UserSignUpDTO userSignUpDTO) throws MessagingException, UnsupportedEncodingException {
-        bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = bCryptPasswordEncoder.encode(userSignUpDTO.getPassword());
         SignUpResponse response = new SignUpResponse();
-        boolean isExisted = userService.isUserEmailExisted(userSignUpDTO.getEmail());
-        String message = "";
-        if (!isExisted)
+        if (!EmailValidatorUtils.isValidEmail(userSignUpDTO.getEmail()))
         {
-            User user = new User();
-            user.setActive(false);
-            user.setUsername(userSignUpDTO.getUserName());
-            user.setEmail(userSignUpDTO.getEmail());
-            user.setPassword(encodedPassword);
-            otpService.sendOTP(userSignUpDTO.getEmail());
-            response.setEmail(userSignUpDTO.getEmail());
-            response.setUsername(userSignUpDTO.getUserName());
-            message = "Sign up successfully! Verify your account by the otp code we have sent to you in your email!";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.CONFLICT.value())
+                            .message("Email is invalid")
+                            .build()
+            );
         }
-        if (!message.isEmpty())
+        if (!userService.isAccountValid(userSignUpDTO.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.CONFLICT.value())
+                            .message("Email already exists or account is activated!")
+                            .build()
+            );
+        }
+
+        if (userService.isUsernameExisted(userSignUpDTO.getUserName()))
         {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.CONFLICT.value())
+                            .message("Username is already existed!")
+                            .build()
+            );
+        }
+
+        if (!userService.isPasswordValid(userSignUpDTO.getPassword()))
+        {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.CONFLICT.value())
+                            .message("Password is not strong!")
+                            .build()
+            );
+        }
+        userService.createNewUser(userSignUpDTO.getUserName(), userSignUpDTO.getPassword(), userSignUpDTO.getEmail());
+        String otpToken = otpService.sendOTP(userSignUpDTO.getEmail());
+        response.setEmail(userSignUpDTO.getEmail());
+        response.setUsername(userSignUpDTO.getUserName());
+        response.setOtpToken(otpToken);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .status(HttpStatus.OK.value())
+                .message("Sign up successfully! Verify your account by the otp code we have sent to your email!")
+                .data(response)
+                .build());
+    }
+
+
+    @PostMapping("/verifyOTP")
+    public ResponseEntity<ResponseObject> receivedOTP(@Valid @RequestBody OTPReceivedDTO receivedOTPDTO)
+    {
+        System.out.println(receivedOTPDTO.getEmail());
+        System.out.println(receivedOTPDTO.getOtpToken());
+        System.out.println(receivedOTPDTO.getOtpCode());
+        boolean isValid = otpService.ValidateOTP(receivedOTPDTO);
+        System.out.println(isValid);
+        if (isValid)
+        {
+
+            userService.activateAccount(receivedOTPDTO.getEmail());
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .status(HttpStatus.OK.value())
-                    .message(message).data(response).build());
-        }
-        else
-        {
-            return ResponseEntity.badRequest().body(ResponseObject.builder()
-                    .message("Error happened during registration!")
+                    .message("Successfully activated your account!")
                     .build());
 
         }
+        return ResponseEntity.badRequest().body(ResponseObject.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Activated failed!")
+                .build());
     }
-
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(@Valid @RequestBody UserLoginDTO userLoginDTO){
         //Nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+
         //xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
     

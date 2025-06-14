@@ -1,9 +1,11 @@
 package vn.dk.BackendFoodApp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.dk.BackendFoodApp.model.User;
 import vn.dk.BackendFoodApp.repository.UserRepository;
+import vn.dk.BackendFoodApp.utils.PasswordUtils;
 
 import java.util.Optional;
 
@@ -12,6 +14,8 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User handleGetUserByUserName(String username){
         return userRepository.findByUsername(username);
@@ -39,9 +43,58 @@ public class UserService {
         return user;
     }
 
-    public boolean isUserEmailExisted(String email)
+    public boolean isAccountValid(String email)
     {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
-        return user.isPresent();
+        // If user exist, then check if they are activated
+        if (user.isPresent())
+        {
+            boolean isAccountActivated = user.get().isActive();
+            return  !isAccountActivated;
+        }
+        return true;
+    }
+    public void activateAccount(String email)
+    {
+        User user = userRepository.findByEmail(email);
+        if (user != null)
+        {
+            user.setActive(true);
+            userRepository.save(user);
+        }
+    }
+    public void createNewUser(String userName, String password, String email)
+    {
+        bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        User existedUser = userRepository.findByEmail(email);
+        if (existedUser!= null) {
+            existedUser.setPassword(encodedPassword);
+            existedUser.setUsername(userName);
+            existedUser.setActive(false);
+            userRepository.save(existedUser);
+            return;
+        }
+        else {
+            User user = new User();
+            user.setEmail(email);
+            user.setUsername(userName);
+            user.setPassword(encodedPassword);
+            user.setActive(false);
+            userRepository.save(user);
+        }
+    }
+    public boolean isUsernameExisted(String username)
+    {
+        User user = userRepository.findByUsername(username);
+        if (user != null)
+        {
+            return true;
+        }
+        return false;
+    }
+    public boolean isPasswordValid(String password)
+    {
+        return PasswordUtils.isPasswordValid(password);
     }
 }

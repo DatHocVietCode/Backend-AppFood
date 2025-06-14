@@ -19,7 +19,7 @@ public class User extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", length = 255)
+    @Column(name = "username", length = 255, unique = true)
     private String username;
 
     @Column(name = "fullname", length = 100)
@@ -33,7 +33,7 @@ public class User extends BaseEntity{
     private Gender gender;
 
     // ALTER TABLE users ADD COLUMN email VARCHAR(255) DEFAULT '';
-    @Column(name = "email", length = 255, nullable = true)
+    @Column(name = "email", length = 255, nullable = true, unique = true)
     private String email;
 
     @Column(name = "address", length = 200)

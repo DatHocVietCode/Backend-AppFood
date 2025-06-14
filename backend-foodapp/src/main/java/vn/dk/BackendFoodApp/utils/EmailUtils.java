@@ -44,7 +44,7 @@ public class EmailUtils {
         String emailContent = "<p>Xin chào,</p>"
                 + "<p>Mã OTP của bạn để xác minh tài khoản FoodApp là:</p>"
                 + "<h2 style='color: #007bff;'>" + otp + "</h2>"
-                + "<p>Mã này sẽ hết hạn sau 15 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>"
+                + "<p>Mã này sẽ hết hạn sau 5 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>"
                 + "<p>Trân trọng,<br>Đội ngũ FoodApp</p>";
         helper.setText(emailContent, true); // true để cho phép nội dung HTML
 
