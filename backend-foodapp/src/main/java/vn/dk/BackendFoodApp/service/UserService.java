@@ -3,6 +3,7 @@ package vn.dk.BackendFoodApp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import vn.dk.BackendFoodApp.model.Role;
 import vn.dk.BackendFoodApp.model.User;
 import vn.dk.BackendFoodApp.repository.UserRepository;
 import vn.dk.BackendFoodApp.utils.PasswordUtils;
@@ -14,6 +15,9 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private RoleService roleService;
 
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -76,10 +80,12 @@ public class UserService {
             return;
         }
         else {
+            Role defaultRole = roleService.getRoleByName("USER");
             User user = new User();
             user.setEmail(email);
             user.setUsername(userName);
             user.setPassword(encodedPassword);
+            user.setRole(defaultRole);
             user.setActive(false);
             userRepository.save(user);
         }

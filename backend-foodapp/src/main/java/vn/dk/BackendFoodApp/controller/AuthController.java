@@ -139,7 +139,7 @@ public class AuthController {
 
         LoginResponse res = new LoginResponse();
         User user = userService.handleGetUserByUserName(userLoginDTO.getUsername());
-        if(user != null){
+        if (user != null){
             LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin(user.getId(),user.getUsername(), user.getRole().getName(), user.getFullName());
             res.setUser(userLogin);
         }

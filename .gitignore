@@ -1,0 +1,63 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+gen/
+
+# VS Code (nếu bạn hoặc partner dùng song song)
+.vscode/
+
+# Build output
+/build/
+/target/
+
+# Maven
+/logs/
+/dependency-reduced-pom.xml
+release.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+*.log
+
+# Gradle
+.gradle/
+/build/
+!gradle-wrapper.jar
+
+# JetBrains specific
+*.ipr
+*.iws
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# Kotlin
+*.class
+
+# Others
+*.swp
+*.tmp
+*~
+
+# JWT Keys / Secrets (nếu dùng)
+private.key
+public.key
+
+# Local database or files
+*.h2.db
+*.sqlite
+*.db
+
+# Cache or generated
+.cache/
