@@ -111,6 +111,10 @@ public class TokenService {
         return null;
     }
 
+    public Jwt checkValidRefreshToken(String refreshToken) {
+        return null;
+    }
+
     /**
      * Get the JWT of the current user.
      *

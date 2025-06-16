@@ -10,9 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class BackendFoodappApplication {
+public class BackendFoodAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackendFoodappApplication.class, args);
+		SpringApplication.run(BackendFoodAppApplication.class, args);
 	}
 }
