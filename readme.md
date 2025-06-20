@@ -29,17 +29,29 @@ This is the backend RESTful API for the **Restaurant Food Ordering App**, built 
 
 Create a `.env` or update `application.yml`:
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/restaurant_db
-spring.datasource.username=root
-spring.datasource.password=your_password
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/restaurant_db
+    username: root
+    password: your_password
 
-jwt.secret=your_jwt_secret
-jwt.expiration=3600000
+jwt:
+  secret: your_jwt_secret
+  expiration: 3600000
+```
 
+---
 
+### ▶️ Run Locally
+
+```bash
 # Build the project
 mvn clean install
 
 # Run the server
 mvn spring-boot:run
+```
+
+---
+
