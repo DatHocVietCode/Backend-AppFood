@@ -73,8 +73,6 @@ public class TokenService {
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-
-
     }
 
     public static Optional<String> getCurrentUserLogin() {

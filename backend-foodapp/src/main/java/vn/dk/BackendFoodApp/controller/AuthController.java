@@ -33,8 +33,6 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/auth")
 public class AuthController {
 
-
-
     @Value("${security.authentication.jwt.refresh-token-validity-in-seconds}")
     private Long refreshTokenExpiration;
 
@@ -146,6 +144,7 @@ public class AuthController {
         }
         //crate a access token
         String access_token = tokenService.createAccessToken(authentication.getName(), res);
+        String refresh_token = tokenService.createRefreshToken(authentication.getName(), res);
         res.setAccessToken(access_token);
     
             //crate a refresh token
