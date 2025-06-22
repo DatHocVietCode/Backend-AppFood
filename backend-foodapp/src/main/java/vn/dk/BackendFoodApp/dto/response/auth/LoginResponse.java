@@ -1,10 +1,7 @@
-package vn.dk.BackendFoodApp.dto.response.user;
+package vn.dk.BackendFoodApp.dto.response.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import vn.dk.BackendFoodApp.model.Role;
-
-import java.util.List;
 
 @Getter
 @Setter

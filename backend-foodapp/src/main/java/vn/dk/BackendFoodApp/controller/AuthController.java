@@ -11,16 +11,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.dk.BackendFoodApp.dto.ResponseObject;
 import vn.dk.BackendFoodApp.dto.request.auth.OTPReceivedDTO;
 import vn.dk.BackendFoodApp.dto.request.auth.UserLoginDTO;
 import vn.dk.BackendFoodApp.dto.request.auth.UserSignUpDTO;
-import vn.dk.BackendFoodApp.dto.response.user.LoginResponse;
-import vn.dk.BackendFoodApp.dto.response.user.SignUpResponse;
+import vn.dk.BackendFoodApp.dto.response.auth.AccessTokenResponse;
+import vn.dk.BackendFoodApp.dto.response.auth.LoginResponse;
+import vn.dk.BackendFoodApp.dto.response.auth.SignUpResponse;
 import vn.dk.BackendFoodApp.exception.InvalidDataException;
 import vn.dk.BackendFoodApp.model.User;
 import vn.dk.BackendFoodApp.service.OTPService;
@@ -29,6 +27,9 @@ import vn.dk.BackendFoodApp.service.UserService;
 import vn.dk.BackendFoodApp.utils.EmailValidatorUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -149,11 +150,14 @@ public class AuthController {
         if (isRefreshTokenValid)
         {
             res.setRefreshToken(userService.getRefreshToken(authentication.getName()));
+
         }
         else
         {
             String refreshToken = tokenService.createRefreshToken(authentication.getName(), res);
             res.setRefreshToken(refreshToken);
+            userService.saveRefreshToken(refreshToken);
+            System.out.println("Refresh token length: " + refreshToken.length());
         }
         res.setAccessToken(access_token);
 
@@ -261,5 +265,38 @@ public class AuthController {
 //                .build();
         return ResponseEntity.ok()
                 .body(ResponseObject.builder().status(HttpStatus.OK.value()).message("Logout success").data(null).build());
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ResponseObject> refreshToken(
+            @RequestParam("refreshToken") String refreshToken) {
+        String username = tokenService.getUsernameFromRefreshToken(refreshToken);
+        // Kiểm tra token có hợp lệ không
+        if (!tokenService.isRefreshTokenValid(refreshToken) || username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseObject.builder()
+                            .status(HttpStatus.OK.value())
+                            .message("Invalid refreshToken!")
+                            .data(null).build());
+        }
+
+        LoginResponse res = new LoginResponse();
+        User user = userService.handleGetUserByUserName(username);
+        LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin(user.getId(), user.getUsername(), user.getRole().getName(), user.getFullName());
+        res.setUser(userLogin);
+        // Tạo access token mới
+        String newAccessToken = tokenService.createAccessToken(username, res);
+
+        AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
+        accessTokenResponse.setAccessToken(newAccessToken);
+
+        List<AccessTokenResponse> data = Collections.singletonList(accessTokenResponse);
+
+        return ResponseEntity.status(HttpStatus.OK.value())
+                .body(ResponseObject.builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Refresh successfully!")
+                        .data(data)
+                        .build());
     }
 }

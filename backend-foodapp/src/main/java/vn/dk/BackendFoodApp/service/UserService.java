@@ -1,6 +1,8 @@
 package vn.dk.BackendFoodApp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.dk.BackendFoodApp.model.Role;
@@ -108,4 +110,12 @@ public class UserService {
     {
         return userRepository.findOptionalRefreshTokenByUsername(username).get();
     }
+
+    public void saveRefreshToken(String refreshToken) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+        user.setRefreshToken(refreshToken); // gán refresh token mới
+        userRepository.save(user); // cập nhật lại trong DB
+    }
+
 }

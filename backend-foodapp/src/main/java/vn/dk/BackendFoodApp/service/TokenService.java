@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
-import vn.dk.BackendFoodApp.dto.response.user.LoginResponse;
+import vn.dk.BackendFoodApp.dto.response.auth.LoginResponse;
 import vn.dk.BackendFoodApp.repository.UserRepository;
 
 import javax.crypto.SecretKey;
@@ -61,8 +61,6 @@ public class TokenService {
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-
-
     }
 
     public String createRefreshToken(String username, LoginResponse loginResponse){
@@ -79,6 +77,7 @@ public class TokenService {
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
@@ -197,6 +196,17 @@ public class TokenService {
             catch (JwtException e) {
                 return false;
             }
+        }
+    }
+    public String getUsernameFromRefreshToken(String refreshToken)
+    {
+        try{
+            Jwt jwt = jwtDecoder.decode(refreshToken);
+            return jwt.getSubject();
+        }
+        catch (Exception e)
+        {
+            return null;
         }
     }
 }

@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.dk.BackendFoodApp.model.Comment;
 import vn.dk.BackendFoodApp.dto.response.BaseResponse;
-import vn.dk.BackendFoodApp.dto.response.user.UserResponse;
+import vn.dk.BackendFoodApp.dto.response.auth.UserResponse;
 
 @Getter
 @Setter

@@ -1,22 +1,16 @@
 package vn.dk.BackendFoodApp.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import vn.dk.BackendFoodApp.dto.ResponseObject;
-import vn.dk.BackendFoodApp.dto.response.user.UserResponse;
+import vn.dk.BackendFoodApp.dto.response.auth.UserResponse;
 import vn.dk.BackendFoodApp.model.User;
 import vn.dk.BackendFoodApp.service.TokenService;
 import vn.dk.BackendFoodApp.service.UserService;
 
-import java.util.List;
 import java.util.Optional;
 
 

@@ -1,9 +1,8 @@
-package vn.dk.BackendFoodApp.dto.response.user;
+package vn.dk.BackendFoodApp.dto.response.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import vn.dk.BackendFoodApp.model.Role;
 import vn.dk.BackendFoodApp.model.User;
 
 import java.util.Date;

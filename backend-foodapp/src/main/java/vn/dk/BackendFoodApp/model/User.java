@@ -52,7 +52,7 @@ public class User extends BaseEntity{
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "refresh_token", columnDefinition = "MEDIUMTEXT")
+    @Column(name = "refresh_token", columnDefinition = "MEDIUMTEXT", length = 1000)
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)

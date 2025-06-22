@@ -1,4 +1,4 @@
-package vn.dk.BackendFoodApp.dto.response.user;
+package vn.dk.BackendFoodApp.dto.response.auth;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
