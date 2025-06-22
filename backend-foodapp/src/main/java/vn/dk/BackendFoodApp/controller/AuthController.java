@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -144,9 +145,18 @@ public class AuthController {
         }
         //crate a access token
         String access_token = tokenService.createAccessToken(authentication.getName(), res);
-        String refresh_token = tokenService.createRefreshToken(authentication.getName(), res);
+        boolean isRefreshTokenValid = tokenService.isRefreshTokenValid(authentication.getName());
+        if (isRefreshTokenValid)
+        {
+            res.setRefreshToken(userService.getRefreshToken(authentication.getName()));
+        }
+        else
+        {
+            String refreshToken = tokenService.createRefreshToken(authentication.getName(), res);
+            res.setRefreshToken(refreshToken);
+        }
         res.setAccessToken(access_token);
-    
+
             //crate a refresh token
 //            String refresh_token = tokenService.createRefreshToken(userLoginDTO.getUsername(), res);
     

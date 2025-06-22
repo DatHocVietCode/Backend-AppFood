@@ -103,4 +103,9 @@ public class UserService {
     {
         return PasswordUtils.isPasswordValid(password);
     }
+
+    public String getRefreshToken(String username)
+    {
+        return userRepository.findOptionalRefreshTokenByUsername(username).get();
+    }
 }

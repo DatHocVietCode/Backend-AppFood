@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import vn.dk.BackendFoodApp.dto.response.user.LoginResponse;
+import vn.dk.BackendFoodApp.repository.UserRepository;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -27,6 +28,9 @@ public class TokenService {
     @Autowired
     JwtEncoder jwtEncoder;
 
+    @Autowired
+    JwtDecoder jwtDecoder;
+
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
     @Value("${security.authentication.jwt.base64-secret}")
@@ -37,6 +41,9 @@ public class TokenService {
 
     @Value("${security.authentication.jwt.refresh-token-validity-in-seconds}")
     private Long refreshTokenExpiration;
+
+    @Autowired
+    UserRepository userRepository;
 
     public String createAccessToken(String username, LoginResponse loginResponse){
 
@@ -171,6 +178,25 @@ public class TokenService {
     // private static Stream<String> getAuthorities(Authentication authentication) {
     //     return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority);
     // }
+    public boolean isRefreshTokenValid(String username)
+    {
+        Optional<String> refreshToken = userRepository.findOptionalRefreshTokenByUsername(username);
+        if (!refreshToken.isPresent())
+        {
+            return false;
+        }
+        else
+        {
+            try {
+                Jwt jwt = jwtDecoder.decode(refreshToken.get());
+                Instant expiration = jwt.getExpiresAt();
+                Instant now = Instant.now();
 
-
+                return expiration != null && expiration.isAfter(now);
+            }
+            catch (JwtException e) {
+                return false;
+            }
+        }
+    }
 }
