@@ -306,7 +306,7 @@ public class AuthController {
         res.setUser(userLogin);
         // Tạo access token mới
         String newAccessToken = tokenService.createAccessToken(username, res);
-
+        System.out.println("New accessToken from refresh endpoint: " + newAccessToken);
         AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
         accessTokenResponse.setAccessToken(newAccessToken);
 
