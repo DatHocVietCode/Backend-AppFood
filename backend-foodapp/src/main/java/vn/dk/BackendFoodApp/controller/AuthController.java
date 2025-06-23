@@ -21,6 +21,7 @@ import vn.dk.BackendFoodApp.dto.response.auth.LoginResponse;
 import vn.dk.BackendFoodApp.dto.response.auth.SignUpResponse;
 import vn.dk.BackendFoodApp.exception.InvalidDataException;
 import vn.dk.BackendFoodApp.model.User;
+import vn.dk.BackendFoodApp.service.CartService;
 import vn.dk.BackendFoodApp.service.OTPService;
 import vn.dk.BackendFoodApp.service.TokenService;
 import vn.dk.BackendFoodApp.service.UserService;
@@ -49,6 +50,9 @@ public class AuthController {
 
     @Autowired
     OTPService otpService;
+
+    @Autowired
+    CartService cartService;
 
     @PostMapping("/signUp")
     public ResponseEntity<ResponseObject> signUp(@Valid @RequestBody UserSignUpDTO userSignUpDTO) throws MessagingException, UnsupportedEncodingException {
@@ -90,7 +94,11 @@ public class AuthController {
                             .build()
             );
         }
-        userService.createNewUser(userSignUpDTO.getUserName(), userSignUpDTO.getPassword(), userSignUpDTO.getEmail());
+        User user = userService.createNewUser(userSignUpDTO.getUserName(), userSignUpDTO.getPassword(), userSignUpDTO.getEmail());
+        if (user != null)
+        {
+            cartService.createCartForUser(user);
+        }
         String otpToken = otpService.sendOTP(userSignUpDTO.getEmail());
         response.setEmail(userSignUpDTO.getEmail());
         response.setUsername(userSignUpDTO.getUserName());
@@ -110,7 +118,7 @@ public class AuthController {
         System.out.println(receivedOTPDTO.getEmail());
         System.out.println(receivedOTPDTO.getOtpToken());
         System.out.println(receivedOTPDTO.getOtpCode());
-        boolean isValid = otpService.ValidateOTP(receivedOTPDTO);
+        boolean isValid = otpService.ValidateReceivedOTP(receivedOTPDTO);
         System.out.println(isValid);
         if (isValid)
         {
@@ -267,17 +275,29 @@ public class AuthController {
                 .body(ResponseObject.builder().status(HttpStatus.OK.value()).message("Logout success").data(null).build());
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<ResponseObject> refreshToken(
-            @RequestParam("refreshToken") String refreshToken) {
+    @PostMapping("/refreshAccessToken")
+    public ResponseEntity<ResponseObject> refreshToken(@RequestHeader("X-Refresh-Token") String refreshToken) {
         String username = tokenService.getUsernameFromRefreshToken(refreshToken);
+        System.out.println("Refresh Token is called: " + refreshToken);
+        if (username == null)
+        {
+            System.out.println("Token invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseObject.builder()
+                            .status(HttpStatus.OK.value())
+                            .message("Can not get username")
+                            .data(null).build());
+
+        }
         // Kiểm tra token có hợp lệ không
-        if (!tokenService.isRefreshTokenValid(refreshToken) || username == null) {
+        if (!tokenService.isRefreshTokenValid(username)) {
+            System.out.println("Token invalid");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ResponseObject.builder()
                             .status(HttpStatus.OK.value())
                             .message("Invalid refreshToken!")
                             .data(null).build());
+
         }
 
         LoginResponse res = new LoginResponse();
@@ -290,7 +310,8 @@ public class AuthController {
         AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
         accessTokenResponse.setAccessToken(newAccessToken);
 
-        List<AccessTokenResponse> data = Collections.singletonList(accessTokenResponse);
+        List<AccessTokenResponse> data = new ArrayList<>();
+        data.add(accessTokenResponse);
 
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(ResponseObject.builder()

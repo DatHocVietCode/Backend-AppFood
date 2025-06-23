@@ -69,7 +69,7 @@ public class UserService {
             userRepository.save(user);
         }
     }
-    public void createNewUser(String userName, String password, String email)
+    public User createNewUser(String userName, String password, String email)
     {
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = bCryptPasswordEncoder.encode(password);
@@ -79,7 +79,7 @@ public class UserService {
             existedUser.setUsername(userName);
             existedUser.setActive(false);
             userRepository.save(existedUser);
-            return;
+            return null;
         }
         else {
             Role defaultRole = roleService.getRoleByName("USER");
@@ -90,6 +90,7 @@ public class UserService {
             user.setRole(defaultRole);
             user.setActive(false);
             userRepository.save(user);
+            return user;
         }
     }
     public boolean isUsernameExisted(String username)

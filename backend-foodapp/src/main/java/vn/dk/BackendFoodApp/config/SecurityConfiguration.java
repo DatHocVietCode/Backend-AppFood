@@ -2,7 +2,12 @@ package vn.dk.BackendFoodApp.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -23,10 +28,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.OncePerRequestFilter;
 import vn.dk.BackendFoodApp.service.TokenService;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import java.io.IOException;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -51,7 +59,7 @@ public class SecurityConfiguration {
                 .csrf(c -> c.disable()) // Disable CSRF vì mình làm API (không cần bảo vệ CSRF)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/","/auth/login","/auth/signUp"
-                                ,"/auth/verifyOTP","/auth/refresh ","/swagger-ui/**",
+                                ,"/auth/verifyOTP","/auth/refreshAccessToken","/swagger-ui/**",
                                 "/categories/**","/uploads/**","/products/**").permitAll() // Những API public cho phép truy cập
                         .requestMatchers("/users/my-profile").authenticated()
                         .anyRequest().authenticated() // Các API còn lại bắt buộc phải đăng nhập
@@ -84,6 +92,7 @@ public class SecurityConfiguration {
                 getSecretKey()).macAlgorithm(TokenService.JWT_ALGORITHM).build();
         return token -> {
             try {
+                System.out.println("From JWT decode: " + token);
                 return jwtDecoder.decode(token);
             } catch (Exception e) {
                 System.out.println(">>> JWT error: " + e.getMessage());
@@ -108,8 +117,6 @@ public class SecurityConfiguration {
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, TokenService.JWT_ALGORITHM.getName());
     }
 
-
-
     @Bean
     public WebSecurityCustomizer ignoreResources() {
         return webSecurity -> webSecurity
@@ -121,4 +128,18 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public FilterRegistrationBean<OncePerRequestFilter> loggingFilter() {
+        FilterRegistrationBean<OncePerRequestFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                    throws ServletException, IOException {
+                System.out.println(">>> Incoming request path: " + request.getRequestURI());
+                filterChain.doFilter(request, response);
+            }
+        });
+        return registrationBean;
+    }
+
 }

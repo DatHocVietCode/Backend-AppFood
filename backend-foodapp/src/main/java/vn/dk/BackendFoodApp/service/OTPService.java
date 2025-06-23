@@ -30,7 +30,15 @@ public class OTPService {
         return String.valueOf(otp);
     }
     public String sendOTP(String email) throws MessagingException, UnsupportedEncodingException {
-        if (otpRepository.findByEmail(email).isEmpty())
+        Optional<OTP> sendingOTP = otpRepository.findByEmail(email);
+        boolean isOTPValid = ValidateOTPFromDB(sendingOTP);
+        if (isOTPValid)
+        {
+            OTP otp = sendingOTP.get();
+            emailUtils.sendOtpEmail(otp.getEmail(), otp.getValue());
+            return otp.getOtpToken();
+        }
+        else
         {
             String otpCode = createOTPCode();
             OTP otp = new OTP();
@@ -39,16 +47,20 @@ public class OTPService {
             otp.setCreatedAt(LocalDateTime.now());
             otp.setOtpToken(UUID.randomUUID().toString());
             otpRepository.save(otp);
+            emailUtils.sendOtpEmail(otp.getEmail(), otp.getValue());
+            return otp.getOtpToken();
         }
-        Optional<OTP> sendingOTP = otpRepository.findByEmail(email);
-        if (sendingOTP.isPresent())
-        {
-            emailUtils.sendOtpEmail(sendingOTP.get().getEmail(), sendingOTP.get().getValue());
-            return sendingOTP.get().getOtpToken();
-        }
-        return null;
     }
-    public boolean ValidateOTP(OTPReceivedDTO otpReceivedDTO)
+    public boolean ValidateOTPFromDB(Optional<OTP> optionalOTP)
+    {
+        if (optionalOTP.isEmpty())
+        {
+            return false;
+        }
+        OTP otp = optionalOTP.get();
+        return Duration.between(otp.getCreatedAt(), LocalDateTime.now()).toMinutes() < 5;
+    }
+    public boolean ValidateReceivedOTP(OTPReceivedDTO otpReceivedDTO)
     {
         Optional<OTP> optionalOTP = null;
         String email = otpReceivedDTO.getEmail();
