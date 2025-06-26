@@ -27,7 +27,7 @@ security:
   authentication:
     jwt:
       base64-secret: ODcxODJlOGI4YTdhZWNlYzE4NmRhNzQwYzQ4ZmIxOTQzODMzZDcxOWQ2OGVlNTk5MjY0MTcxNTc3YTcyZmIzN2I0YmI4NmI1ZDU2NDU4YzUxZjI0MDMwM2E5MDI4YWU5YTIyMWQ5ZDNhODBhMmNhZjFkM2VlZWRhN2Y4ZWVlOTk=
-      access-token-validity-in-seconds: 5
+      access-token-validity-in-seconds: 300
       refresh-token-validity-in-seconds: 604800
 api:
   prefix: /api/v1

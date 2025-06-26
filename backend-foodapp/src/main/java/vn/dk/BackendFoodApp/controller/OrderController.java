@@ -76,6 +76,7 @@ public class OrderController {
                     .paymentMethod(order.getPaymentMethod())
                     .totalPrice(order.getTotalMoney())
                     .created(order.getOrderDate())
+                    .address(order.getAddress().getAddress())
                     .products(products)
                     .build();
 
@@ -139,6 +140,7 @@ public class OrderController {
                     .deliveryFee(order.getShippingMethod().getPrice())
                     .created(order.getOrderDate())
                     .status(order.getStatus())
+                    .address(order.getAddress().getAddress())
                     .build();
 
             result.add(dto);

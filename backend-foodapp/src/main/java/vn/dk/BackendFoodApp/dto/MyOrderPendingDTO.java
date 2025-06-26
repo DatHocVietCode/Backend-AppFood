@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.dk.BackendFoodApp.model.Address;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -22,4 +23,5 @@ public class MyOrderPendingDTO {
     private String paymentMethod;
     private Float deliveryFee;
     private Integer voucher;
+    private String address;
 }
