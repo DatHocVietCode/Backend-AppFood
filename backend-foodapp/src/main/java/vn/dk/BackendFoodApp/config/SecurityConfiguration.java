@@ -68,7 +68,6 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(customAuthenticationEntryPoint))
-
                 .exceptionHandling(
                         exceptions -> exceptions
                                 .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) //401

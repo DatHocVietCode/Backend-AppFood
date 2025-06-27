@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import vn.dk.BackendFoodApp.model.Role;
 import vn.dk.BackendFoodApp.model.User;
 import vn.dk.BackendFoodApp.repository.UserRepository;
@@ -82,7 +83,7 @@ public class UserService {
             return null;
         }
         else {
-            Role defaultRole = roleService.getRoleByName("USER");
+            Role defaultRole = roleService.getRoleByName(Role.USER);
             User user = new User();
             user.setEmail(email);
             user.setUsername(userName);
@@ -119,4 +120,8 @@ public class UserService {
         userRepository.save(user); // cập nhật lại trong DB
     }
 
+    public void updateUserProfile(User user)
+    {
+        userRepository.save(user);
+    }
 }

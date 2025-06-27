@@ -18,11 +18,10 @@ spring:
             required: true
   profiles:
     active: @spring.profiles.active@
-  spring:
-    servlet:
-      multipart:
-        max-file-size: 50MB       # default = 1MB
-        max-request-size: 50MB    # default = 10MB (form data)
+  servlet:
+    multipart:
+      max-file-size: 50MB       # default = 1MB
+      max-request-size: 50MB    # default = 10MB (form data)
 security:
   authentication:
     jwt:
