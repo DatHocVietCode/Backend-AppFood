@@ -85,7 +85,7 @@ public class UserController {
                 String filename = UUID.randomUUID() + "_" + avatarFile.getOriginalFilename();
 
                 // Bỏ prefix "file:/" để lấy đường dẫn vật lý thực tế
-                String rawPath = uploadDir.replace("file:///", "").replace("file:\\", "");
+                String rawPath = uploadDir.replace("file:///", "");
 
                 // Tạo thư mục nếu chưa tồn tại
                 File dir = new File(rawPath);
